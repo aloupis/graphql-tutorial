@@ -46,14 +46,14 @@ const updatePostForUser = async (postId, data) => {
   return post.author;
 };
 
-updatePostForUser("cjqtjn3xf00110a31bfmlfvn1", {
-  title: "GraphQl updated",
-  body: `Updated graphql at ${new Date()} !!`
-})
-  .then(user => {
-    console.log(JSON.stringify(user, undefined, 2));
-  })
-  .catch(error => console.log(error.message));
+// updatePostForUser("cjqtjn3xf00110a31bfmlfvn1", {
+//   title: "GraphQl updated",
+//   body: `Updated graphql at ${new Date()} !!`
+// })
+//   .then(user => {
+//     console.log(JSON.stringify(user, undefined, 2));
+//   })
+//   .catch(error => console.log(error.message));
 
 // createPostForUser("cjqt9u4zp001n0a31n96vixdz", {
 //   title: "GreatBooks to Read",
