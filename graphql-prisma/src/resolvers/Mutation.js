@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getUserId from "../utils/getUserId";
 
 const Mutation = {
   async createUser(parent, args, { prisma }, info) {
@@ -19,6 +20,23 @@ const Mutation = {
       token: jwt.sign({ userId: user.id }, "thisisasecret")
     };
   },
+  async loginUser(parent, args, { prisma }, info) {
+    const user = await prisma.query.user({ where: { email: args.data.email } });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(args.data.password, user.password);
+    if (isMatch) {
+      return {
+        user,
+        token: jwt.sign({ userId: user.id }, "thisisasecret")
+      };
+    } else {
+      throw new Error("Unable to login");
+    }
+  },
   async deleteUser(parent, args, { prisma }, info) {
     return await prisma.mutation.deleteUser({ where: { id: args.id } }, info);
   },
@@ -28,7 +46,8 @@ const Mutation = {
       info
     );
   },
-  async createPost(parent, args, { prisma }, info) {
+  async createPost(parent, args, { prisma, request }, info) {
+    const userId = getUserId(request);
     return await prisma.mutation.createPost(
       {
         data: {
@@ -37,7 +56,7 @@ const Mutation = {
           published: args.data.published,
           author: {
             connect: {
-              id: args.data.author
+              id: userId
             }
           }
         }
